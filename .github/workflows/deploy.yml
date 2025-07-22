@@ -52,10 +52,7 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v2
       with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-        subscription-id: ${{ secrets.AZURE_SUSCRIPTION_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
     
     - name: Login to Azure Container Registry
       run: |
@@ -205,10 +202,7 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v2
       with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-        subscription-id: ${{ secrets.AZURE_SUSCRIPTION_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
     
     - name: Get AKS credentials
       run: |
