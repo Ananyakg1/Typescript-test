@@ -53,6 +53,7 @@ jobs:
       uses: azure/login@v2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+        enable-AzPSSession: false
     
     - name: Login to Azure Container Registry
       run: |
@@ -203,6 +204,7 @@ jobs:
       uses: azure/login@v2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+        enable-AzPSSession: false
     
     - name: Get AKS credentials
       run: |
