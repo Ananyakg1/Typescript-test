@@ -1,0 +1,15 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: typescript-app-pdb
+  namespace: typescript-namespace
+  labels:
+    app: typescript-app
+    environment: production
+spec:
+  selector:
+    matchLabels:
+      app: typescript-app
+      environment: production
+  minAvailable: 2
+  # Alternative: maxUnavailable: 1

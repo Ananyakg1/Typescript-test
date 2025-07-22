@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: typescript-app-service
+  namespace: typescript-namespace
+  labels:
+    app: typescript-app
+    environment: production
+  annotations:
+    description: "ClusterIP service for TypeScript application"
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: ClusterIP
+  selector:
+    app: typescript-app
+    environment: production
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
+  sessionAffinity: None
+---
+# Optional: Headless service for direct pod communication
+apiVersion: v1
+kind: Service
+metadata:
+  name: typescript-app-headless
+  namespace: typescript-namespace
+  labels:
+    app: typescript-app
+    environment: production
+  annotations:
+    description: "Headless service for TypeScript application"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: typescript-app
+    environment: production
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+    protocol: TCP

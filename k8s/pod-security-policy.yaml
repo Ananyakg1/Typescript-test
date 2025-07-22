@@ -1,0 +1,99 @@
+# Pod Security Policy (deprecated in K8s 1.25+, use Pod Security Standards instead)
+# This is for reference if using older Kubernetes versions
+
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: typescript-app-psp
+  namespace: typescript-namespace
+  labels:
+    app: typescript-app
+    environment: production
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  
+  # Required security contexts
+  runAsUser:
+    rule: 'MustRunAs'
+    ranges:
+    - min: 1001
+      max: 1001
+  
+  runAsGroup:
+    rule: 'MustRunAs'
+    ranges:
+    - min: 1001
+      max: 1001
+  
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+    - min: 1001
+      max: 1001
+  
+  # Volume types allowed
+  volumes:
+  - 'configMap'
+  - 'emptyDir'
+  - 'projected'
+  - 'secret'
+  - 'downwardAPI'
+  - 'persistentVolumeClaim'
+  
+  # Network policies
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  
+  # Security capabilities
+  requiredDropCapabilities:
+  - ALL
+  
+  allowedCapabilities:
+  - NET_BIND_SERVICE
+  
+  # File system
+  readOnlyRootFilesystem: true
+  
+  # SELinux (if applicable)
+  seLinux:
+    rule: RunAsAny
+  
+  # Allowed host paths (none for security)
+  allowedHostPaths: []
+  
+  # Forbidden sysctls
+  forbiddenSysctls:
+  - '*'
+
+---
+# ClusterRole for PSP
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: typescript-app-psp-role
+rules:
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+  resourceNames:
+  - typescript-app-psp
+
+---
+# ClusterRoleBinding for PSP
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: typescript-app-psp-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: typescript-app-psp-role
+subjects:
+- kind: ServiceAccount
+  name: typescript-app-sa
+  namespace: typescript-namespace

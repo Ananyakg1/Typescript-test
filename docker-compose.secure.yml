@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  juice-shop:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: juice-shop-secure
+    
+    # Security contexts
+    security_opt:
+      - no-new-privileges:true
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    
+    # Network security
+    networks:
+      - juice-shop-network
+    
+    # Port mapping (non-privileged port)
+    ports:
+      - "3000:3000"
+    
+    # Environment variables
+    environment:
+      - NODE_ENV=production
+      - NODE_OPTIONS=--max-old-space-size=1024
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "node", "-e", "const http = require('http'); const req = http.get('http://localhost:3000/rest/admin/application-version', (res) => process.exit(res.statusCode === 200 || res.statusCode === 401 ? 0 : 1)); req.on('error', () => process.exit(1));"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Read-only root filesystem (uncomment if compatible with app requirements)
+    # read_only: true
+    
+    # Temporary filesystems for writable areas
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+    
+    # User specification
+    user: "1001:1001"
+    
+    # Volumes for persistence (if needed)
+    volumes:
+      - juice-shop-logs:/app/logs:rw
+      - juice-shop-uploads:/app/uploads:rw
+
+  # Optional: Add a reverse proxy for additional security
+  nginx:
+    image: nginx:1.25.4-alpine3.18
+    container_name: juice-shop-proxy
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - juice-shop-network
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - juice-shop
+    restart: unless-stopped
+    user: "nginx:nginx"
+
+networks:
+  juice-shop-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  juice-shop-logs:
+    driver: local
+  juice-shop-uploads:
+    driver: local

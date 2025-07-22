@@ -1,0 +1,73 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: typescript-app
+  namespace: typescript-namespace
+
+# Common labels applied to all resources
+commonLabels:
+  app: typescript-app
+  environment: production
+  managed-by: kustomize
+
+# Common annotations applied to all resources
+commonAnnotations:
+  deployment.kubernetes.io/revision: "1"
+  app.kubernetes.io/name: "typescript-app"
+  app.kubernetes.io/version: "1.0.0"
+  app.kubernetes.io/component: "backend"
+  app.kubernetes.io/part-of: "typescript-application"
+  app.kubernetes.io/managed-by: "kustomize"
+
+# Namespace to deploy to
+namespace: typescript-namespace
+
+# List of resource files
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secret.yaml
+  - deployment.yaml
+  - service.yaml
+  - network-policy.yaml
+  - hpa.yaml
+  - pdb.yaml
+  # - pod-security-policy.yaml  # Uncomment if using Kubernetes < 1.25
+
+# Images to be used
+images:
+  - name: typescript
+    newTag: latest  # This will be replaced by CI/CD
+
+# ConfigMap generator (alternative to configmap.yaml)
+# configMapGenerator:
+#   - name: typescript-app-config
+#     literals:
+#       - NODE_ENV=production
+#       - PORT=8080
+#       - LOG_LEVEL=info
+
+# Secret generator (alternative to secret.yaml)
+# secretGenerator:
+#   - name: typescript-app-secrets
+#     literals:
+#       - DB_PASSWORD=placeholder
+#       - JWT_SECRET=placeholder
+
+# Patches for different environments
+patchesStrategicMerge: []
+
+# JSON patches
+patches: []
+
+# Replicas
+replicas:
+  - name: typescript-app-deployment
+    count: 3
+
+# Name prefix for all resources
+namePrefix: ""
+
+# Name suffix for all resources
+nameSuffix: ""

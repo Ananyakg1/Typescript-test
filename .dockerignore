@@ -1,0 +1,172 @@
+# Security-focused .dockerignore file for OWASP Juice Shop
+
+# Version control and development files
+.git/
+.gitignore
+.gitattributes
+.github/
+.vscode/
+.idea/
+
+# Documentation and non-essential files
+*.md
+README*
+CHANGELOG*
+LICENSE*
+AUTHORS*
+docs/
+documentation/
+
+# Development and testing files
+test/
+tests/
+spec/
+specs/
+__tests__/
+coverage/
+.nyc_output/
+junit.xml
+test-results/
+
+# Build artifacts and temporary files
+build/
+dist/
+tmp/
+temp/
+.tmp/
+*.tmp
+*.temp
+
+# Logs and runtime files
+logs/
+*.log
+*.pid
+*.pid.lock
+*.seed
+*.out
+*.tgz
+
+# Dependency directories (will be copied selectively)
+node_modules/
+bower_components/
+jspm_packages/
+
+# NPM and Yarn files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.yarn/
+.yarn-integrity
+package-lock.json
+yarn.lock
+
+# Environment and configuration files
+.env*
+.config
+.envrc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Vagrant and virtualization
+Vagrantfile
+.vagrant/
+*.box
+
+# Docker files (prevent recursive copying)
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+.docker/
+
+# CI/CD and deployment files
+.travis.yml
+.circleci/
+.github/
+.gitlab-ci.yml
+jenkinsfile
+Jenkinsfile
+.jenkins/
+.drone.yml
+appveyor.yml
+azure-pipelines.yml
+.azure/
+
+# Backup and archive files
+*.bak
+*.backup
+*.old
+*.orig
+*.save
+*.swp
+*.tar
+*.tar.gz
+*.tar.bz2
+*.zip
+*.7z
+*.rar
+
+# Security sensitive files
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+secrets/
+.secrets/
+
+# Cache directories
+.cache/
+.npm/
+.node_repl_history
+.sass-cache/
+.stylelintcache
+.eslintcache
+
+# Frontend specific ignores
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+frontend/e2e/
+frontend/src/test.ts
+
+# TypeScript compilation
+*.tsbuildinfo
+
+# Linting and formatting
+.eslintcache
+.stylelintcache
+.prettier*
+
+# Profiling and debugging
+*.cpuprofile
+*.heapsnapshot
+
+# Miscellaneous
+.wakatime-project
+.editorconfig
+.browserslistrc
+.nvmrc

@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: ServiceMonitor
+metadata:
+  name: typescript-app-monitor
+  namespace: typescript-namespace
+  labels:
+    app: typescript-app
+    environment: production
+spec:
+  selector:
+    matchLabels:
+      app: typescript-app
+      environment: production
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+    scrapeTimeout: 10s
+    honorLabels: false
+  namespaceSelector:
+    matchNames:
+    - typescript-namespace
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: typescript-app-alerts
+  namespace: typescript-namespace
+  labels:
+    app: typescript-app
+    environment: production
+spec:
+  groups:
+  - name: typescript-app.rules
+    rules:
+    - alert: TypeScriptAppDown
+      expr: up{job="typescript-app-service"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "TypeScript application is down"
+        description: "TypeScript application has been down for more than 1 minute."
+    
+    - alert: TypeScriptAppHighCPU
+      expr: rate(container_cpu_usage_seconds_total{pod=~"typescript-app-.*"}[5m]) > 0.8
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "TypeScript application high CPU usage"
+        description: "TypeScript application CPU usage is above 80% for more than 2 minutes."
+    
+    - alert: TypeScriptAppHighMemory
+      expr: container_memory_usage_bytes{pod=~"typescript-app-.*"} / container_spec_memory_limit_bytes > 0.9
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "TypeScript application high memory usage"
+        description: "TypeScript application memory usage is above 90% for more than 2 minutes."
+    
+    - alert: TypeScriptAppHighErrorRate
+      expr: rate(http_requests_total{job="typescript-app-service",status=~"5.."}[5m]) / rate(http_requests_total{job="typescript-app-service"}[5m]) > 0.1
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "TypeScript application high error rate"
+        description: "TypeScript application error rate is above 10% for more than 1 minute."

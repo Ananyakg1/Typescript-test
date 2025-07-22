@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: typescript-service-account
+  namespace: typescript-namespace
+  labels:
+    app: typescript-app
+    environment: production
+  annotations:
+    kubernetes.io/enforce-mountable-secrets: "typescript-secrets"
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: typescript-role
+  namespace: typescript-namespace
+rules:
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: typescript-rolebinding
+  namespace: typescript-namespace
+subjects:
+- kind: ServiceAccount
+  name: typescript-service-account
+  namespace: typescript-namespace
+roleRef:
+  kind: Role
+  name: typescript-role
+  apiGroup: rbac.authorization.k8s.io
